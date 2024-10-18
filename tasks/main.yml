@@ -1,40 +1,42 @@
 ---
 - name: Ensure dependencies are installed
   ansible.builtin.apt:
-    name:
-      - software-properties-common
+    name: software-properties-common
     state: present
     update_cache: yes
     cache_valid_time: 3600
 
 - name: Check if PPA vbernat/haproxy-{{ haproxy_version }} is present
-  ansible.builtin.shell: add-apt-repository --list | grep
+  ansible.builtin.shell: add-apt-repository --list | grep vbernat/haproxy-{{ haproxy_version }}
   failed_when: haproxy_repo_present.rc not in [0,1]
   changed_when: false
   register: haproxy_repo_present
 
+- name: Print return information from the previous task
+  ansible.builtin.debug:
+    var: haproxy_repo_present
 # - name: Add HAProxy {{ haproxy_version }} repository into sources list
 #   ansible.builtin.apt_repository:
 #     repo: "ppa:vbernat/haproxy-{{ haproxy_version }}"
 #     state: present
 #     update_cache: true
 
-- name: Install HAProxy
-  ansible.builtin.apt:
-    name: "haproxy={{ haproxy_version }}.*"
-    state: present
+# - name: Install HAProxy
+#   ansible.builtin.apt:
+#     name: "haproxy={{ haproxy_version }}.*"
+#     state: present
 
-- name: Copy HAProxy configuration
-  ansible.builtin.template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
-    mode: 0644
-    validate: haproxy -f %s -c -q
-    force: true
-  notify: Reload HAProxy
+# - name: Copy HAProxy configuration
+#   ansible.builtin.template:
+#     src: haproxy.cfg.j2
+#     dest: /etc/haproxy/haproxy.cfg
+#     mode: 0644
+#     validate: haproxy -f %s -c -q
+#     force: true
+#   notify: Reload HAProxy
 
-- name: Ensure HAProxy is started and enabled at boot
-  ansible.builtin.service:
-    name: haproxy
-    state: started
-    enabled: true
+# - name: Ensure HAProxy is started and enabled at boot
+#   ansible.builtin.service:
+#     name: haproxy
+#     state: started
+#     enabled: true
