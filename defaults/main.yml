@@ -1,0 +1,39 @@
+haproxy_version: 2.8
+
+# Global config section
+haproxy_global_vars:
+  - log /dev/log local0
+  - log /dev/log local1 notice
+  - stats socket /var/lib/haproxy/stats level admin
+  - chroot /var/lib/haproxy
+  - user haproxy
+  - group haproxy
+  - daemon
+
+# Default config section
+haproxy_default_vars:
+  - log global
+  - mode tcp
+  - option dontlognull
+  - option tcplog
+
+# Frontends
+haproxy_frontends:
+  - name: example
+    config:
+      - bind 10.10.10.10:443
+      - mode tcp
+      - default_backend example
+      - option tcplog
+
+# Backends
+haproxy_backends:
+  - name: example
+    config:
+      - mode tcp
+      - balance roundrobin
+      - option httpchk GET /
+      - http-check expect status 200
+      - default-server inter 3s downinter 3s rise 2 fall 2 slowstart 60s
+      - server beta 10.10.10.11:443 check port 80
+      - server beta02 10.10.10.12:443 check port 80
