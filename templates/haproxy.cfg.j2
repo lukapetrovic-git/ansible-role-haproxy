@@ -18,6 +18,7 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
+{% if haproxy_frontends | length > 0 %}
 {% for frontend in haproxy_frontends %}
 frontend {{ frontend.name }}
   {% for line in frontend.config %}
@@ -25,7 +26,9 @@ frontend {{ frontend.name }}
   {% endfor %}
 
 {% endfor %}
+{% endif %}
 
+{% if haproxy_backends | length > 0 %}
 {% for backend in haproxy_backends %}
 backend {{ backend.name }}
   {% for line in backend.config %}
@@ -33,3 +36,14 @@ backend {{ backend.name }}
   {% endfor %}
 
 {% endfor %}
+{% endif %}
+
+{% if haproxy_listens | length > 0 %}
+{% for listen in haproxy_listens %}
+listen {{ listen.name }}
+  {% for line in listen.config %}
+  {{ line }}
+  {% endfor %}
+
+{% endfor %}
+{% endif %}
