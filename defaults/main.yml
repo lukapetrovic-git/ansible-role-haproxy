@@ -18,23 +18,47 @@ haproxy_default_vars:
   - option tcplog
   - option dontlognull
 
-# Frontends
-haproxy_frontends:
-  - name: example
-    config:
-      - bind 10.10.10.10:443
-      - mode tcp
-      - default_backend example
-      - option tcplog
+# Frontend sections (check example below)
+haproxy_frontends: []
+# haproxy_frontends:
+#   - name: example_frontend
+#     config:
+#       - bind *:80
+#       - mode tcp
+#       - default_backend example_backend
+#       - option tcplog
 
-# Backends
-haproxy_backends:
-  - name: example
-    config:
-      - mode tcp
-      - balance roundrobin
-      - option httpchk GET /
-      - http-check expect status 200
-      - default-server inter 3s downinter 3s rise 2 fall 2 slowstart 60s
-      - server beta 10.10.10.11:443 check port 80
-      - server beta02 10.10.10.12:443 check port 80
+#   - name: stats
+#     config:
+#       - bind *:8404
+#       - mode http
+#       - stats enable
+#       - stats uri /stats
+#       - stats refresh 5s
+#       - stats admin if TRUE
+
+# Backend sections (check example below)
+haproxy_backends: []
+# haproxy_backends:
+#   - name: example_backend
+#     config:
+#       - mode tcp
+#       - balance roundrobin
+#       - option httpchk GET /
+#       - http-check expect status 200
+#       - default-server inter 3s downinter 3s rise 2 fall 2 slowstart 60s
+#       - server app1 10.10.10.11:80 check port 80
+#       - server app2 10.10.10.12:80 check port 80
+
+# Listen section (check example below)
+haproxy_listens: []
+# haproxy_listens:
+#   - name: example_listen
+#     config:
+#       - bind *:443
+#       - mode tcp
+#       - option tcplog
+#       - balance roundrobin
+#       - option httpchk GET /
+#       - server app1 10.10.10.21:443 check check-ssl
+#       - server app2 10.10.10.22:443 check check-ssl
