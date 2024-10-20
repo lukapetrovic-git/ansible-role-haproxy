@@ -40,7 +40,7 @@ backend {{ backend.name }}
 
 {% if haproxy_listens | length > 0 %}
 {% for listen in haproxy_listens %}
-backend {{ listen.name }}
+listen {{ listen.name }}
   {% for line in listen.config %}
   {{ line }}
   {% endfor %}
