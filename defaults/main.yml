@@ -77,6 +77,8 @@ haproxy_install_keepalived: false
 # RFC 1122 recommends at least 100 seconds for the timeout, which corresponds to a value of at least 8.
 haproxy_keepalived_sysctl_tcp_retries: 8
 
+# Keepalive peers
 haproxy_keepalived_peers: []
 
+# Keepalive virtual ips
 haproxy_keepalived_virtual_ips: []

@@ -36,14 +36,14 @@
     force: true
   notify: Reload HAProxy
 
+- name: Install Keepalived
+  ansible.builtin.include_tasks:
+    file: keepalived.yml
+  when: haproxy_install_keepalived | bool
+
 - name: Ensure HAProxy is started and enabled at boot
   ansible.builtin.systemd_service:
     name: haproxy
     state: started
     enabled: true
     masked: false
-
-- name: Install Keepalived
-  ansible.builtin.include_tasks:
-    file: keepalived.yml
-  when: haproxy_install_keepalived | bool
