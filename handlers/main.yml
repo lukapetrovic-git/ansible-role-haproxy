@@ -3,3 +3,8 @@
   ansible.builtin.service:
     name: haproxy
     state: reloaded
+
+- name: Restart keepalived
+  ansible.builtin.service:
+    name: keepalived
+    state: restarted

@@ -37,7 +37,13 @@
   notify: Reload HAProxy
 
 - name: Ensure HAProxy is started and enabled at boot
-  ansible.builtin.service:
+  ansible.builtin.systemd_service:
     name: haproxy
     state: started
     enabled: true
+    masked: false
+
+- name: Install Keepalived
+  ansible.builtin.include_tasks:
+    file: keepalived.yml
+  when: haproxy_install_keepalived | bool

@@ -62,3 +62,21 @@ haproxy_listens: []
 #       - option httpchk GET /
 #       - server app1 10.10.10.21:443 check check-ssl
 #       - server app2 10.10.10.22:443 check check-ssl
+
+# Install keepalived
+haproxy_install_keepalived: false
+
+# Sets "net.ipv4.tcp_retries2"
+# The value for this parameter is a balance between detecting a dead connection quickly
+# (which may be of value in an HA setting) and reliability in the face of a lossy network
+# (eg. overloaded switch, or the wider Internet).
+# No one value is perfect for all situations.
+# HA configurations with well-provisioned networks AND systems, and only internal traffic, may well choose lower values.
+# General-purpose ones and configurations with only one server (non-HA) should not.
+# The parameter controls the total time before a connection failure is declared.
+# RFC 1122 recommends at least 100 seconds for the timeout, which corresponds to a value of at least 8.
+haproxy_keepalived_sysctl_tcp_retries: 8
+
+haproxy_keepalived_peers: []
+
+haproxy_keepalived_virtual_ips: []

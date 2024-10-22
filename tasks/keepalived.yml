@@ -1,0 +1,42 @@
+---
+- name: Install keepalived package
+  ansible.builtin.apt:
+    name: keepalived
+    state: present
+
+- name: Allow apps to bind on non local addresses for IPv4
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+  loop:
+    - name: "net.ipv4.ip_nonlocal_bind"
+      value: 1
+    - name: "net.ipv4.tcp_retries2"
+      value: "{{ haproxy_keepalived_sysctl_tcp_retries }}"
+  notify: Restart keepalived
+
+- name: Ensure keepalive dir is present
+  ansible.builtin.file:
+    path: /etc/keepalived
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Create keepalived config file
+  ansible.builtin.template:
+    src: templates/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart keepalived
+
+- name: Ensure keepalived is started and enabled at boot
+  ansible.builtin.systemd_service:
+    name: keepalived
+    state: started
+    enabled: true
+    masked: false
