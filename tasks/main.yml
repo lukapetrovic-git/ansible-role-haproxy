@@ -24,7 +24,7 @@
 - name: Install HAProxy
   ansible.builtin.apt:
     name: "haproxy={{ haproxy_version }}.*"
-    state: present
+    state: "{{ haproxy_package_state }}"
     update_cache: true
 
 - name: Copy HAProxy configuration
@@ -35,9 +35,11 @@
     validate: haproxy -f %s -c -q
     force: true
   notify: Reload HAProxy
+  when: not haproxy_package_state == 'absent'
 
 - name: Ensure HAProxy is started and enabled at boot
   ansible.builtin.service:
     name: haproxy
     state: started
     enabled: true
+  when: not haproxy_package_state == 'absent'

@@ -1,5 +1,11 @@
 ---
+# HAProxy version to install, according to HAProxy you should stick to versions/braches (for example 2.8.x or 2.9.x) and apply all patches,
+# for example 2.8.1, 2.8.2, etc. This variable follows that logic and passes the package to apt as "haproxy={{ haproxy_version }}.*"
+# For more info read https://github.com/haproxy/haproxy/blob/master/BRANCHES
 haproxy_version: 2.8
+
+# HAProxy package state
+haproxy_package_state: present
 
 # Global config section
 haproxy_global_vars:
