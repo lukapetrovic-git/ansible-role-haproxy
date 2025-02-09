@@ -19,13 +19,21 @@
 - name: Add PPA vbernat/haproxy-{{ haproxy_version }}
   ansible.builtin.command: add-apt-repository ppa:vbernat/haproxy-{{ haproxy_version }} -y
   changed_when: true
-  when: haproxy_repo_present.stdout == ''
+  when: haproxy_repo_present.stdout == '' and ansible_os_family == "Ubuntu"
 
-- name: Install HAProxy
+- name: Install HAProxy version {{ haproxy_version }}
   ansible.builtin.apt:
     name: "haproxy={{ haproxy_version }}.*"
     state: "{{ haproxy_package_state }}"
     update_cache: true
+  when: haproxy_version
+
+- name: Install the version of HAProxy from apt
+  ansible.builtin.apt:
+    name: "haproxy"
+    state: "{{ haproxy_package_state }}"
+    update_cache: true
+  when: not haproxy_version
 
 - name: Copy HAProxy configuration
   ansible.builtin.template:
