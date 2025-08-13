@@ -8,7 +8,7 @@
 
 - name: Set HAProxy version
   ansible.builtin.set_fact:
-    haproxy_version: "{{ haproxy_version_result.stdout }}"
+    haproxy_version: "{{ haproxy_version_result.stdout_lines[0] }}"
   when: haproxy_version is not defined or haproxy_version == 'latest'
 
 - name: Display a variable
