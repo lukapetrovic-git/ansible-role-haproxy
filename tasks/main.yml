@@ -10,25 +10,26 @@
   ansible.builtin.include_tasks:
     file: setup-Ubuntu.yml
   when: ansible_distribution == "Ubuntu"
-# - name: Install HAProxy
-#   ansible.builtin.apt:
-#     name: "haproxy={{ haproxy_version }}.*"
-#     state: "{{ haproxy_package_state }}"
-#     update_cache: true
 
-# - name: Copy HAProxy configuration
-#   ansible.builtin.template:
-#     src: haproxy.cfg.j2
-#     dest: /etc/haproxy/haproxy.cfg
-#     mode: "0644"
-#     validate: haproxy -f %s -c -q
-#     force: true
-#   notify: Reload HAProxy
-#   when: not haproxy_package_state == 'absent'
+- name: Install HAProxy
+  ansible.builtin.apt:
+    name: "haproxy={{ haproxy_version }}.*"
+    state: "{{ haproxy_package_state }}"
+    update_cache: true
 
-# - name: Ensure HAProxy is started and enabled at boot
-#   ansible.builtin.service:
-#     name: haproxy
-#     state: started
-#     enabled: true
-#   when: not haproxy_package_state == 'absent'
+- name: Copy HAProxy configuration
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
+    validate: haproxy -f %s -c -q
+    force: true
+  notify: Reload HAProxy
+  when: not haproxy_package_state == 'absent'
+
+- name: Ensure HAProxy is started and enabled at boot
+  ansible.builtin.service:
+    name: haproxy
+    state: started
+    enabled: true
+  when: not haproxy_package_state == 'absent'
