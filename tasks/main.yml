@@ -15,6 +15,7 @@
   ansible.builtin.apt:
     name: "haproxy={{ haproxy_version }}.*"
     state: "{{ haproxy_package_state }}"
+    allow_downgrade: true
     update_cache: true
 
 - name: Copy HAProxy configuration
