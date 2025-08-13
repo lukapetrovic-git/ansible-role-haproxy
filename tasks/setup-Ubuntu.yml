@@ -15,6 +15,7 @@
     executable: /bin/bash
   changed_when: false
   register: ubuntu_architecture
+  when: haproxy_version is not defined
 
 - name: Find latest version of HAProxy
   ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}" --ubuntu-architecture "{{ ubuntu_architecture.stdout }}"
