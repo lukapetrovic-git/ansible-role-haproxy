@@ -11,6 +11,13 @@ arguments.add_argument(
     help="Ubuntu release name, e.g. 'noble'",
     required=True,
 )
+arguments.add_argument(
+    "--ubuntu-architecture",
+    dest="ubuntu_architecture",
+    type=str,
+    help="Ubuntu architecture, e.g. 'amd64'",
+    required=True,
+)
 arguments = arguments.parse_args()
 
 http = urllib3.PoolManager()
@@ -28,7 +35,7 @@ response_data = json.loads(response.data.decode('utf-8'))
 for ppa in response_data["entries"]:
     if ppa["name"].startswith("haproxy"):
         ppa_binaries_url = urljoin(
-            ppa["self_link"], f"?ws.op=getPublishedBinaries&status=Published&distro_arch_series=https://api.launchpad.net/1.0/ubuntu/{arguments.ubuntu_release_name}/amd64")
+            ppa["self_link"], f"?ws.op=getPublishedBinaries&status=Published&distro_arch_series=https://api.launchpad.net/1.0/ubuntu/{arguments.ubuntu_release_name}/{arguments.ubuntu_architecture}")
         ppa_binaries_response = http.request('GET', ppa_binaries_url)
         if ppa_binaries_response.status != 200:
             raise Exception(

@@ -1,6 +1,23 @@
 ---
+- name: Set CPU architecture
+  ansible.builtin.shell: |
+    set -o pipefail -e
+
+    architecture="{{ ansible_architecture }}"
+    if [[ "$architecture" == "x86_64" ]]; then
+      echo "amd64"
+    elif [[ "$architecture" == "aarch64" ]]; then
+      echo "arm64"
+    elif [[ "$architecture" == "i386" ]]; then
+      echo "i386"
+    fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: ubuntu_architecture
+
 - name: Find latest version of HAProxy
-  ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}"
+  ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}" --ubuntu-architecture "{{ ubuntu_architecture.stdout }}"
   args:
     executable: python3
   register: haproxy_version_result
