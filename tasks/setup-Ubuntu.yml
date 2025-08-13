@@ -1,6 +1,6 @@
 ---
 - name: Find latest version of HAProxy
-  ansible.builtin.script: files/find_latest_haproxy.py
+  ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}"
   args:
     executable: python3
   register: haproxy_version_result
