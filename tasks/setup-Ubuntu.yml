@@ -1,0 +1,30 @@
+---
+- name: Find latest version of HAProxy
+  ansible.builtin.script: files\find_latest_haproxy.py
+  args:
+    executable: python3
+  register: haproxy_version_result
+  when: haproxy_version is not defined or haproxy_version == 'latest'
+
+- name: Set HAProxy version
+  ansible.builtin.set_fact:
+    haproxy_version: "{{ haproxy_version_result.stdout }}"
+  when: haproxy_version is not defined or haproxy_version == 'latest'
+
+- name: Display a variable
+  debug:
+    var: haproxy_version
+# - name: Check if PPA present - vbernat/haproxy-{{ haproxy_version }}
+#   ansible.builtin.shell: |
+#     set -o pipefail
+#     add-apt-repository --list | grep vbernat/haproxy-{{ haproxy_version }}
+#   args:
+#     executable: /bin/bash
+#   failed_when: haproxy_repo_present.rc not in [0,1]
+#   changed_when: false
+#   register: haproxy_repo_present
+
+# - name: Add PPA vbernat/haproxy-{{ haproxy_version }}
+#   ansible.builtin.command: add-apt-repository ppa:vbernat/haproxy-{{ haproxy_version }} -y
+#   changed_when: true
+#   when: haproxy_repo_present.stdout == ''
