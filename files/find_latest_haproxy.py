@@ -48,6 +48,6 @@ for ppa in response_data["entries"]:
 if haproxy_ppas:
     haproxy_ppas.sort(reverse=True)
     haproxy_version_latest = haproxy_ppas[0].split('-')[1].strip()
-    print(haproxy_version_latest.strip())
+    print(haproxy_version_latest)
 else:
     raise Exception("No HAProxy PPAs found")
