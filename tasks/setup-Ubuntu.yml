@@ -34,7 +34,7 @@
 
 - name: Set HAProxy version
   ansible.builtin.set_fact:
-    haproxy_version: "{{ haproxy_version_result.stdout_lines[0] }}"
+    haproxy_version: "{{ haproxy_version_result.stdout_lines[0] | trim }}"
   when: haproxy_version == "latest"
 
 - name: Check if PPA present - vbernat/haproxy-{{ haproxy_version }}
