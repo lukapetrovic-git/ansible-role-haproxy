@@ -1,0 +1,53 @@
+---
+- name: Ensure dependencies are installed
+  ansible.builtin.apt:
+    name: software-properties-common
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Set CPU architecture
+  ansible.builtin.shell: |
+    set -o pipefail -e
+
+    architecture="{{ ansible_architecture }}"
+    if [[ "$architecture" == "x86_64" ]]; then
+      echo "amd64"
+    elif [[ "$architecture" == "aarch64" ]]; then
+      echo "arm64"
+    elif [[ "$architecture" == "i386" ]]; then
+      echo "i386"
+    fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: ubuntu_architecture
+  when: haproxy_version == "latest"
+
+- name: Find latest version of HAProxy
+  ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}" --ubuntu-architecture "{{ ubuntu_architecture.stdout }}"
+  args:
+    executable: python3
+  changed_when: false
+  register: haproxy_version_result
+  when: haproxy_version == "latest"
+
+- name: Set HAProxy version
+  ansible.builtin.set_fact:
+    haproxy_version: "{{ haproxy_version_result.stdout_lines[0] | trim }}"
+  when: haproxy_version == "latest"
+
+- name: Check if PPA present - vbernat/haproxy-{{ haproxy_version }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    add-apt-repository --list | grep vbernat/haproxy-{{ haproxy_version }}
+  args:
+    executable: /bin/bash
+  failed_when: haproxy_repo_present.rc not in [0,1]
+  changed_when: false
+  register: haproxy_repo_present
+
+- name: Add PPA vbernat/haproxy-{{ haproxy_version }}
+  ansible.builtin.command: add-apt-repository ppa:vbernat/haproxy-{{ haproxy_version }} -y
+  changed_when: true
+  when: haproxy_repo_present.stdout == ''

@@ -9,7 +9,7 @@ Ansible role to install/configure HAProxy on Debian based distros.
 - Ubuntu 22.04 LTS
 - Ubuntu 24.04 LTS
 
-NOTE: Should work on Debian too, but needs to be tested.
+Debian compatibility will be added in a future release.
 
 # Role Variables
 All settable variables with explanations and links are located in the defaults/main.yml

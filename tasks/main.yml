@@ -1,30 +1,14 @@
 ---
-- name: Ensure dependencies are installed
-  ansible.builtin.apt:
-    name: software-properties-common
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
-- name: Check if PPA present - vbernat/haproxy-{{ haproxy_version }}
-  ansible.builtin.shell: |
-    set -o pipefail
-    add-apt-repository --list | grep vbernat/haproxy-{{ haproxy_version }}
-  args:
-    executable: /bin/bash
-  failed_when: haproxy_repo_present.rc not in [0,1]
-  changed_when: false
-  register: haproxy_repo_present
-
-- name: Add PPA vbernat/haproxy-{{ haproxy_version }}
-  ansible.builtin.command: add-apt-repository ppa:vbernat/haproxy-{{ haproxy_version }} -y
-  changed_when: true
-  when: haproxy_repo_present.stdout == ''
+- name: Ubuntu specific tasks
+  ansible.builtin.include_tasks:
+    file: setup-Ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
 
 - name: Install HAProxy
   ansible.builtin.apt:
     name: "haproxy={{ haproxy_version }}.*"
     state: "{{ haproxy_package_state }}"
+    allow_downgrade: true
     update_cache: true
 
 - name: Copy HAProxy configuration
