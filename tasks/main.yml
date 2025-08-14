@@ -1,11 +1,4 @@
 ---
-- name: Ensure dependencies are installed
-  ansible.builtin.apt:
-    name: software-properties-common
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
 - name: Ubuntu specific tasks
   ansible.builtin.include_tasks:
     file: setup-Ubuntu.yml
