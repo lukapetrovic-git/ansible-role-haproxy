@@ -22,7 +22,7 @@
     executable: /bin/bash
   changed_when: false
   register: ubuntu_architecture
-  when: haproxy_version is not defined
+  when: haproxy_version == "latest"
 
 - name: Find latest version of HAProxy
   ansible.builtin.script: files/find_latest_haproxy.py --ubuntu-release-name "{{ ansible_facts['distribution_release'] }}" --ubuntu-architecture "{{ ubuntu_architecture.stdout }}"
@@ -30,12 +30,12 @@
     executable: python3
   changed_when: false
   register: haproxy_version_result
-  when: haproxy_version is not defined
+  when: haproxy_version == "latest"
 
 - name: Set HAProxy version
   ansible.builtin.set_fact:
     haproxy_version: "{{ haproxy_version_result.stdout_lines[0] }}"
-  when: haproxy_version is not defined
+  when: haproxy_version == "latest"
 
 - name: Check if PPA present - vbernat/haproxy-{{ haproxy_version }}
   ansible.builtin.shell: |
